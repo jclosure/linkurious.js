@@ -62,7 +62,7 @@
      *
      * @return A graph object
      */
-    sigma.neo4j.cypher_parse = function(result) {
+  sigma.neo4j.cypher_parse = function(result, sig) {
         var graph = { nodes: [], edges: [] },
             nodesMap = {},
             edgesMap = {},
@@ -71,16 +71,17 @@
         // Iteration on all result data
         result.results[0].data.forEach(function (data) {
 
+         
             // iteration on graph for all node
             data.graph.nodes.forEach(function (node) {
 
                 var sigmaNode =  {
                     id : node.id,
-                    label : node.id,
+                    label : node.properties[sig.label] ||  node.properties[Object.keys(node.properties)[0]] || node.id,
                     x : Math.random(),
                     y : Math.random(),
-                    size : 1,
-                    color : '#000000',
+                    size : sig.size || 1,
+                    color : sig.defaultNodeColor || '#000000',
                     neo4j_labels : node.labels,
                     neo4j_data : node.properties
                 };
@@ -161,7 +162,7 @@
 
                 var graph = { nodes: [], edges: [] };
 
-                graph = sigma.neo4j.cypher_parse(response);
+              graph = sigma.neo4j.cypher_parse(response, sig);
 
                 // Update the instance's graph:
                 if (sig instanceof sigma) {
